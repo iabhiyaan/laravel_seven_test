@@ -9,10 +9,12 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    protected $post = null;
-    public function __construct(Post $post)
+    protected $model = null;
+    protected $categories = null;
+    public function __construct(Post $model, Category $categories)
     {
-        $this->post = $post;
+        $this->model = $model;
+        $this->categories = $categories;
     }
     /**
      * Display a listing of the resource.
@@ -21,7 +23,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $datas['details'] = $this->model->get();
+        return view('admin.post.list', $datas);
     }
 
     /**
@@ -31,7 +34,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $datas['categories'] = Category::all();
+        $datas['categories'] = $this->categories->get();
         return view('admin.post.create', $datas);
     }
 
@@ -43,9 +46,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $formData = $request->except(['_token', 'image',]);
-        $this->post->create($formData);
-        return redirect()->back();
+        $request->validate([
+            'title' => 'required',
+        ]);
+        $formData = $request->except(['is_published']);
+        $formData['is_published']  = is_null($request->is_published) ? 0 : 1;
+        $this->model->create($formData);
+        return redirect()->route('post.index')->with('message', 'post added successfully');
     }
 
     /**
@@ -67,7 +74,9 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $datas['detail'] = $this->model->findOrFail($id);
+        $datas['categories'] = $this->categories->get();
+        return view('admin.post.edit', $datas);
     }
 
     /**
@@ -79,7 +88,11 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $oldRecord = $this->model->findOrFail($id);
+        $formData = $request->except(['is_published']);
+        $formData['is_published']  = is_null($request->is_published) ? 0 : 1;
+        $oldRecord->update($formData);
+        return redirect()->route('post.index')->with('message', 'post updated successfully');
     }
 
     /**

@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    protected $category = null;
-    public function __construct(Category $category)
+    protected $model = null;
+    public function __construct(Category $model)
     {
-        $this->category = $category;
+        $this->model = $model;
     }
     /**
      * Display a listing of the resource.
@@ -20,7 +20,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('admin.category.create');
+        $datas['details'] = $this->model->get();
+        return view('admin.category.list', $datas);
     }
 
     /**
@@ -42,7 +43,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $formData = $request->except(['_token',]);
-        $this->category->create($formData);
+        $this->model->create($formData);
+        return redirect()->route('category.index')->with('message', 'category added successfully');
     }
 
     /**
