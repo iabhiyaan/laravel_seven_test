@@ -47,3 +47,7 @@ Route::group(
       Route::resource('post', PostController::class);
    }
 );
+
+Route::get('/', function () {
+   return 'home';
+})->name('home');

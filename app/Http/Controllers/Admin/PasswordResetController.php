@@ -66,6 +66,6 @@ class PasswordResetController extends Controller
             $formData['password'] = bcrypt($request->password);
         }
         $detail->update($formData);
-        return redirect()->route('home')->with('message', "Password has been changed");
+        return redirect()->route('login')->with('message', "Password has been changed");
     }
 }
