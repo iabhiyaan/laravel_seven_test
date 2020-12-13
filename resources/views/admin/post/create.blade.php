@@ -29,6 +29,11 @@
                                     value="{{ old('title') }}">
                             </div>
                             <div class="form-group col-md-4">
+                                <label for="title" class="col-form-label">Post title</label>
+                                <input type="file" name="image" class="form-control" id="title" placeholder="Post title"
+                                    value="{{ old('title') }}">
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label for="slug" class="col-form-label">Post slug</label>
                                 <input type="text" name="slug" value="{{ old('slug') }}" class="form-control" id="slug"
                                     placeholder="Post slug">
