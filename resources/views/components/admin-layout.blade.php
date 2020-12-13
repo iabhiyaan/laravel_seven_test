@@ -1,3 +1,9 @@
+@php
+$user = Auth::user();
+$role = $user->role;
+$user_access = explode(',', $user->access_level);
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,8 +22,14 @@
     {{ $styles ?? null }}
     <style>
         label.col-form-label,
-        .form-control::placeholder {
+        .form-control::placeholder,
+        .metismenu li span {
             text-transform: capitalize;
+        }
+
+        .badge {
+            color: #2c3440 !important;
+            padding: 3px 6px;
         }
 
     </style>
@@ -34,18 +46,18 @@
                         role="button" aria-haspopup="false" aria-expanded="false">
                         <img src="/admin/images/users/user-1.jpg" alt="user-image" class="rounded-circle">
                         <span class="pro-user-name ml-1">
-                            Admin<i class="mdi mdi-chevron-down"></i>
+                            {{ auth()->user()->name }}<i class="mdi mdi-chevron-down"></i>
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                         <!-- item-->
-                        <a href="{{ route('admin.logout') }}"
+                        <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                             class="dropdown-item notify-item">
                             <i class="fe-log-out"></i>
                             <span>Logout</span>
                         </a>
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="GET" style="display: none;">
+                        <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
                             @csrf
                         </form>
 
@@ -100,33 +112,53 @@
                             </a>
                         </li>
 
+                        {{-- user starts --}}
+                        @if ($role == 'super-admin' || ($role == 'admin' && in_array('user', $user_access)))
+                            <li>
+                                <a href="javascript: void(0);">
+                                    <i class="mdi mdi-account"></i>
+                                    <span> admin user </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level" aria-expanded="false">
+                                    <li><a href="{{ route('user.create') }}">Add new</a></li>
+                                    <li><a href="{{ route('user.index') }}">All lists</a></li>
+                                </ul>
+                            </li>
+                        @endif
+                        {{-- user ends --}}
+
                         {{-- category starts --}}
-                        <li>
-                            <a href="javascript: void(0);">
-                                <i class="mdi mdi-invert-colors"></i>
-                                <span> Category </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="{{ route('category.create') }}">Add new</a></li>
-                                <li><a href="{{ route('category.index') }}">All lists</a></li>
-                            </ul>
-                        </li>
+                        @if ($role == 'super-admin' || ($role == 'admin' && in_array('category', $user_access)))
+                            <li>
+                                <a href="javascript: void(0);">
+                                    <i class="mdi mdi-gift"></i>
+                                    <span> Category </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level" aria-expanded="false">
+                                    <li><a href="{{ route('category.create') }}">Add new</a></li>
+                                    <li><a href="{{ route('category.index') }}">All lists</a></li>
+                                </ul>
+                            </li>
+                        @endif
+
                         {{-- category ends --}}
 
                         {{-- post ends --}}
-
-                        <li>
-                            <a href="javascript: void(0);">
-                                <i class="mdi mdi-invert-colors"></i>
-                                <span> Post </span>
-                                <span class="menu-arrow"></span>
-                            </a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="{{ route('post.create') }}">Add new</a></li>
-                                <li><a href="{{ route('post.index') }}">All lists</a></li>
-                            </ul>
-                        </li>
+                        @if ($role == 'super-admin' || ($role == 'admin' && in_array('post', $user_access)))
+                            <li>
+                                <a href="javascript: void(0);">
+                                    <i class="mdi mdi-blogger"></i>
+                                    <span> Post </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level" aria-expanded="false">
+                                    <li><a href="{{ route('post.create') }}">Add new</a></li>
+                                    <li><a href="{{ route('post.index') }}">All lists</a></li>
+                                </ul>
+                            </li>
+                        @endif
                         {{-- post ends --}}
 
                     </ul>

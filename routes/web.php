@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\PasswordResetController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,8 +29,7 @@ Route::group([], function () {
    Route::post('send-email-link', [PasswordResetController::class, 'sendEmailLink'])->name('sendEmailLink');
    Route::get('reset-password/{token}', [PasswordResetController::class, 'passwordResetForm'])->name('passwordResetForm');
    Route::post('update-password', [PasswordResetController::class, 'updatePassword'])->name('updatePassword');
-
-   Route::get('logout', [LoginController::class, 'admin__logout'])->name('admin.logout');
+   Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 });
 
 Route::group(
@@ -39,12 +39,18 @@ Route::group(
    ],
    function () {
       // prefix => admin makes url admin/
-      // namespace => admin makes Admin/DashboardController@index
 
       Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-      Route::resource('category', CategoryController::class);
-      Route::resource('post', PostController::class);
+      // User with `role => admin` has access for following controllers
+
+      Route::group(['middleware' => 'role'], function () {
+         Route::resources([
+            'user' => UserController::class,
+            'category' => CategoryController::class,
+            'post' => PostController::class,
+         ]);
+      });
    }
 );
 
