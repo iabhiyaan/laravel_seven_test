@@ -45,6 +45,9 @@ Route::group(
       // User with `role => admin` has access for following controllers
 
       Route::group(['middleware' => 'role'], function () {
+         Route::post('image-process', [PostController::class, 'imageProcess'])->name('imageProcess');
+         Route::post('crop-modal', [PostController::class, 'imageCropModal'])->name('imageCropModal');
+         Route::post('crop-process', [PostController::class, 'imageCropProcess'])->name('imageCropProcess');
          Route::resources([
             'user' => UserController::class,
             'category' => CategoryController::class,

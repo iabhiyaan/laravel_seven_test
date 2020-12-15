@@ -12,27 +12,42 @@ class ImageProcessingService
 
       $input['imagename'] = Date("D-h-i-s") . '-' . rand() . '-' . '.' . $image->getClientOriginalExtension();
 
-      $thumbPath = public_path('images/thumbnail');
-      $mainPath = public_path('images/main');
-      $listingPath = public_path('images/listing');
+      $thumbPath = public_path('images/thumbnail/');
+      $mainPath = public_path('images/main/');
+      $listingPath = public_path('images/listing/');
 
       $img = Image::make($image->getRealPath());
-      $img->fit($width, $height)->save($mainPath . '/' . $input['imagename']);
+      $img->fit($width, $height)->save($mainPath . $input['imagename']);
 
       if ($otherpath == 'yes') {
          $img1 = Image::make($image->getRealPath());
          $img1->resize($width / 2, null, function ($constraint) {
             $constraint->aspectRatio();
-         })->save($listingPath . '/' . $input['imagename']);
+         })->save($listingPath . $input['imagename']);
 
          $img1->fit(200, null, function ($constraint) {
             $constraint->aspectRatio();
-         })->save($thumbPath . '/' . $input['imagename']);
+         })->save($thumbPath . $input['imagename']);
          $img1->destroy();
       }
 
       $img->destroy();
       return $input['imagename'];
+   }
+
+   public function fileProcessing($file, $type = 'file')
+   {
+      if (is_null($file)) {
+         return;
+      }
+
+      $input['filename'] = Date("D-h-i-s") . '-' . rand() . '-' . '.' . $file->getClientOriginalExtension();
+      if ($type == 'file') {
+         $file->move(public_path('document'), $input['filename']);
+      } else {
+         $file->move(public_path('images/main'), $input['filename']);
+      }
+      return $input['filename'];
    }
 
    public function unlinkImage($imagename)

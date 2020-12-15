@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
+use App\Services\ImageCropService;
 use App\Services\ImageProcessingService;
 use Illuminate\Http\Request;
 
@@ -13,12 +14,14 @@ class PostController extends Controller
     protected $model = null;
     protected $categories = null;
     protected $imageProcessingService = null;
+    protected $imageCropService = null;
 
-    public function __construct(Post $model, Category $categories, ImageProcessingService $imageProcessingService)
+    public function __construct(Post $model, Category $categories, ImageProcessingService $imageProcessingService, ImageCropService $imageCropService)
     {
         $this->model = $model;
         $this->categories = $categories;
         $this->imageProcessingService = $imageProcessingService;
+        $this->imageCropService = $imageCropService;
     }
     /**
      * Display a listing of the resource.
@@ -27,7 +30,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $datas['details'] = $this->model->get();
+        $datas['details'] = $this->model->latest()->get();
         return view('admin.post.list', $datas);
     }
 
@@ -51,13 +54,10 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
+            // 'title' => 'required',
         ]);
-        $formData = $request->except(['is_published', 'image']);
+        $formData = $request->except(['is_published']);
         $formData['is_published']  = is_null($request->is_published) ? 0 : 1;
-        if ($request->hasFile('image')) {
-            $formInput['image'] = $this->imageProcessingService->imageProcessing($request->image, 750, 562, 'yes');
-        }
         $this->model->create($formData);
         return redirect()->route('post.index')->with('message', 'post added successfully');
     }
@@ -110,6 +110,35 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $oldRecord = $this->model->findOrFail($id);
+        if ($oldRecord->image) {
+            $this->imageProcessingService->unlinkImage($oldRecord->image);
+        }
+        $oldRecord->delete();
+        return redirect()->back()->with('message', 'post deleted successfully');
+    }
+
+    public function imageProcess(Request $request)
+    {
+        $message = ['filename.dimensions' => 'image must be less than 2900*2000'];
+        $validator = \Validator::make($request->all(), [
+            'filename' => 'dimensions:max_width=2500,max_height=1800',
+        ], $message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+        $detail = $this->imageCropService->imageProcess($request->filename);
+        return response()->json($detail);
+    }
+
+    public function imageCropModal(Request $request)
+    {
+        return view('admin.post.jcrop')->with('image', $request->name);
+    }
+    public function imageCropProcess(Request $request)
+    {
+        $coordinates =  [$request->x, $request->y, $request->w, $request->h];
+        $finalImage = $this->imageCropService->cropProcess($request->image, $coordinates);
+        return $finalImage;
     }
 }

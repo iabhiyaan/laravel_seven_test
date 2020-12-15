@@ -23,6 +23,7 @@
                                 <th>SN</th>
                                 <th>Title</th>
                                 <th>Slug</th>
+                                <th>Image</th>
                                 <th>Status</th>
                                 <th>Options</th>
                             </tr>
@@ -35,6 +36,12 @@
                                         <td>{{ ++$key }}</td>
                                         <td>{{ $data->title }}</td>
                                         <td>{{ $data->slug }}</td>
+                                        <td>
+                                            @if ($data->image)
+                                                <img src="/images/main/{{ $data->image }}" alt="{{ $data->slug }}"
+                                                    class="img-fluid">
+                                            @endif
+                                        </td>
                                         <td>
                                             <span
                                                 class="badge badge-{{ $data->is_published == 1 ? 'success' : 'danger' }}">
