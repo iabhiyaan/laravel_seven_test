@@ -1,6 +1,6 @@
 <img src="{{ asset('images/listing') }}/{{ $image }}" id="cropimage">
 
-<form method="post" action="{{ route('imageCropProcess') }}" enctype="multipart/form-data" id="cropprocess">
+<form method="post" action="{{ route('post.imageCropProcess') }}" enctype="multipart/form-data" id="cropprocess">
     @csrf
     <input type="hidden" name="image" value="{{ $image }}" id="hidimg">
     <input type="hidden" name="x" value="" id="x">

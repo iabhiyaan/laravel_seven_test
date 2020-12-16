@@ -15,7 +15,7 @@ class ImageCropService
       $mainPath = public_path('images/main/');
       $listingPath = public_path('images/listing/');
 
-      $filename = Date("D-h-i-s") . '-' . rand() . '-' . '.' . $image->getClientOriginalExtension();;
+      $filename = Date("D-h-i-s") . '-' . rand() . '-' . '.' . $image->getClientOriginalExtension();
 
       $width = $data[0];
       $height = $data[1];

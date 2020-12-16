@@ -117,7 +117,7 @@
                             } else {
                                 var formData = new FormData($('#form')[0]);
                                 $.ajax({
-                                    url: "{{ route('imageProcess') }}",
+                                    url: "{{ route('post.imageProcess') }}",
                                     method: 'POST',
                                     data: formData,
                                     async: false,
@@ -157,7 +157,7 @@
                 $("#crop").click(function() {
                     var name = $("#name").val();
                     $.ajax({
-                        url: "{{ route('imageCropModal') }}",
+                        url: "{{ route('post.imageCropModal') }}",
                         data: {
                             name: name
                         },

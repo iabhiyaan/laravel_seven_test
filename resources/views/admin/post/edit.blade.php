@@ -18,7 +18,7 @@
             <div class="col-md-12">
                 <div class="card-box">
 
-                    <form id="form" action="{{ route('updatePostWithImage', $detail->id) }}" method="POST"
+                    <form id="form" action="{{ route('post.updatePostWithImage', $detail->id) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
@@ -118,7 +118,7 @@
                             } else {
                                 var formData = new FormData($('#form')[0]);
                                 $.ajax({
-                                    url: "{{ route('imageProcess') }}",
+                                    url: "{{ route('post.imageProcess') }}",
                                     method: 'POST',
                                     data: formData,
                                     async: false,
@@ -158,7 +158,7 @@
                 $("#crop").click(function() {
                     var name = $("#name").val();
                     $.ajax({
-                        url: "{{ route('imageCropModal') }}",
+                        url: "{{ route('post.imageCropModal') }}",
                         data: {
                             name: name
                         },
