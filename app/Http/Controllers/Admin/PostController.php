@@ -141,4 +141,15 @@ class PostController extends Controller
         $finalImage = $this->imageCropService->cropProcess($request->image, $coordinates);
         return $finalImage;
     }
+    public function updatePostWithImage(Request $request, $id)
+    {
+        $oldRecord = $this->model->findOrFail($id);
+        if ($oldRecord->image) {
+            $this->imageProcessingService->unlinkImage($oldRecord->image);
+        }
+        $formData = $request->except(['is_published']);
+        $formData['is_published']  = is_null($request->is_published) ? 0 : 1;
+        $oldRecord->update($formData);
+        return redirect()->route('post.index')->with('message', 'post updated successFully');
+    }
 }

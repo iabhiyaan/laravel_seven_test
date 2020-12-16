@@ -48,6 +48,7 @@ Route::group(
          Route::post('image-process', [PostController::class, 'imageProcess'])->name('imageProcess');
          Route::post('crop-modal', [PostController::class, 'imageCropModal'])->name('imageCropModal');
          Route::post('crop-process', [PostController::class, 'imageCropProcess'])->name('imageCropProcess');
+         Route::post('update-post/{id}',  [PostController::class, 'updatePostWithImage'])->name('updatePostWithImage');
          Route::resources([
             'user' => UserController::class,
             'category' => CategoryController::class,
