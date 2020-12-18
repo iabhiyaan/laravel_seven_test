@@ -43,8 +43,18 @@ class MultipleImageCropService
          $detail['name'] = $filename;
          $detail['success'] = 'success';
          $detail['path'] = asset('images/main');
+
+         // $name[] by giving array in last => push the other data in $name array
+         /*
+         E.g
+         $name = [
+            ['data1'],
+            ['data2]
+         ]; */
+
+         $name[] = $detail;
       }
-      return $detail;
+      return $name;
    }
 
    public function jcropProcess($imageFile, $coordinates)
@@ -68,7 +78,7 @@ class MultipleImageCropService
       $img->save($listingImagePath . $image);
       $img->save($thumbImagePath . $image);
       // $finalImage='images/temp/thumb'.$image;
-      $finalImage = asset('images/thumbnail/' . $image);
+      $finalImage = asset('images/main/' . $image);
       $image = '';
 
       return $finalImage;
