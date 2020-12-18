@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use App\Models\GalleryImage;
 use App\Services\ImageProcessingService;
 use App\Services\MultipleImageCropService;
@@ -128,9 +129,9 @@ class GalleryController extends Controller
 
     public function galleryImage(Request $request)
     {
-        $detail = $this->multipleImageCropService->galleryImage($request->file('image'));
+        $details = $this->multipleImageCropService->galleryImage($request->file('image'));
         return response()->json([
-            'html' => view('admin.gallery.card-with-photo', compact('detail'))->render(),
+            'html' => view('admin.gallery.card-with-photo', compact('details'))->render(),
         ]);
     }
     public function crop(Request $request)
